@@ -17,12 +17,10 @@ export default function Navigation() {
     <NavigationContainer>
       <Tab.Navigator
         initialRouteName="restaurants"
-        tabBarOptions={{
-          inactiveTintColor: "#646464",
-          activeTintColor: "#00a680",
-        }}
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color }) => screenOptions(route, color),
+          tabBarActiveTintColor: "#00a680",
+          tabBarInactiveTintColor: "black",
         })}
       >
         <Tab.Screen

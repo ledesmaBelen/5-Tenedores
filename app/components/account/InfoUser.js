@@ -54,10 +54,11 @@ export default function InfoUser(props) {
       >
         <Avatar.Accessory size={23} />
       </Avatar>
-
       <View>
-        <Text style={styles.displayName}>perez perez</Text>
-        <Text>faesdca@svf.es</Text>
+        <Text style={styles.displayName}>
+          {displayName ? displayName : "Anónimo"}
+        </Text>
+        <Text>{email ? email : "Social Login"}</Text>
       </View>
     </View>
   );

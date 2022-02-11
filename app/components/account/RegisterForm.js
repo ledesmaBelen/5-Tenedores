@@ -17,28 +17,27 @@ export default function RegisterForm() {
   const [showPasswordRepeat, setShowPasswordRepeat] = useState(false);
   //HOOK PARA DATOS DINAMCOS DEL FORMULARIO
   const [fromData, setfromData] = useState(defaultFromValue());
+  const [errors, setErrors] = useState({});
   //COMPONENTE LOADING PARA CARGA MIENTRAS CREA USER
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   //Valida que los campos sean correctos
   //LOS TOAST RETORNAN LOS ERRORES GRAFICAMENTE
   const onSubmit = () => {
+    setErrors({});
     if (
       isEmpty(fromData.email) ||
       isEmpty(fromData.password) ||
       isEmpty(fromData.passwordRepeat)
     ) {
-      //toastRef.current.show("Todos los campos son obligatorios");
-      console.log("Todos los campos son obligatorios");
+      setErrors({ errEmail: "Todos los campos son obligatorios" });
     } else if (!validateEmail(fromData.email)) {
-      // toastRef.current.show("El email es incorrecto");
-      console.log("El email es incorrecto");
+      setErrors({ errEmail: "El email es incorrecto" });
     } else if (fromData.password !== fromData.passwordRepeat) {
-      // toastRef.current.show("Las contraseñas deben ser iguales");
-      console.log("Las contraseñas deben ser iguales");
+      setErrors({ errPass: "Las contraseñas deben ser iguales" });
+      console.log("");
     } else if (size(fromData.password) < 6) {
-      //toastRef.current.show("La contraseña debe tener al menos 6 caracteres");
-      console.log("La contraseña debe tener al menos 6 caracteres");
+      setErrors({ errPass: "La contraseña debe tener al menos 6 caracteres" });
     } else {
       setLoading(true);
       firebase
@@ -74,6 +73,7 @@ export default function RegisterForm() {
             IconStyle={styles.iconRight}
           />
         }
+        errorMessage={errors.errEmail}
       />
       <Input
         placeholder="Contraseña"
@@ -89,6 +89,7 @@ export default function RegisterForm() {
             onPress={() => setShowPassword(!showPassword)}
           />
         }
+        errorMessage={errors.errPass}
       />
       <Input
         placeholder="Repetir Contraseña"

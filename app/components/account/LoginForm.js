@@ -13,14 +13,17 @@ export default function LoginForm() {
   const [formData, setFromData] = useState(defaultFromValue);
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const [errors, seterrors] = useState({});
+
   const onChange = (e, type) => {
     setFromData({ ...formData, [type]: e.nativeEvent.text });
   };
   const onSubmit = () => {
+    seterrors({});
     if (isEmpty(formData.email) || isEmpty(formData.password)) {
-      console.log("Todos los campos son obligatorios");
+      seterrors({ errEmail: "Todos los campos son obligatorios" });
     } else if (!validateEmail(formData.email)) {
-      console.log("El email es incorrecto");
+      seterrors({ errEmail: "El email es incorrecto" });
     } else {
       setLoading(true);
       firebase
@@ -32,7 +35,7 @@ export default function LoginForm() {
           navigation.navigate("account");
         })
         .catch(() => {
-          console.log("Email o contraseña incorrecto");
+          seterrors({ errPass: "El email o contraseña es incorrecto" });
           setLoading(false);
         });
     }
@@ -46,6 +49,7 @@ export default function LoginForm() {
         rightIcon={
           <Icon type="material-community" name="at" styles={styles.iconR} />
         }
+        errorMessage={errors.errEmail}
       />
       <Input
         placeholder="Contraseña"
@@ -61,6 +65,7 @@ export default function LoginForm() {
             onPress={() => setShowPassword(!showPassword)}
           />
         }
+        errorMessage={errors.errPass}
       />
       <Button
         title="Iniciar Seccion"

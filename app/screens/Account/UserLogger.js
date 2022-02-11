@@ -9,26 +9,31 @@ import AccountOptions from "../../components/account/AccountOptions";
 export default function UserLogger() {
   const [userInfo, setuserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [laodingText, setlaodingText] = useState("");
+  const [loadingText, setloadingText] = useState("");
+  const [reloadUserInfo, setreloadUserInfo] = useState(false);
 
   useEffect(() => {
     (async () => {
       const user = await firebase.auth().currentUser;
       setuserInfo(user);
     })();
-  }, []);
+    setreloadUserInfo(false);
+  }, [reloadUserInfo]);
 
   return (
     <View style={styles.viewUserInfo}>
       {userInfo && <InfoUser userInfo={userInfo} />}
-      <AccountOptions user={userInfo} />
+      <AccountOptions
+        userInfo={userInfo}
+        setreloadUserInfo={setreloadUserInfo}
+      />
       <Button
         title="Cerrar sesion"
         buttonStyle={styles.btnCloseSesion}
         titleStyle={styles.btnCloseSesionText}
         onPress={() => firebase.auth().signOut()}
       />
-      <Loading text={laodingText} isVisible={loading} />
+      <Loading text={loadingText} isVisible={loading} />
     </View>
   );
 }
@@ -44,7 +49,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopWidth: 1,
     borderTopColor: "#e3e3e3",
-    borderBottomWidht: 1,
+    borderBottomWidth: 1,
     borderBottomColor: "#e3e3e3",
     paddingTop: 10,
     paddingBottom: 10,

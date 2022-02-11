@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
     height: 100,
     width: 200,
     backgroundColor: "#FFF",
-    border: "#00a680",
-    borderWidth: "2",
+    borderColor: "#00a680",
+    borderWidth: 2,
     borderRadius: 10,
   },
   view: {
@@ -40,6 +40,6 @@ const styles = StyleSheet.create({
   text: {
     color: "#00a680",
     textTransform: "uppercase",
-    marginTop: "10",
+    marginTop: 10,
   },
 });
