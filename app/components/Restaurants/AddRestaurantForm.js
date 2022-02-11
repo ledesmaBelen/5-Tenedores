@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, ScrollView, StyleSheet, View } from "react-native";
-import { Input } from "react-native-elements";
+import { Icon, Input } from "react-native-elements";
 
 export default function AddRestaurantForm(props) {
   const { setiIsLoading, navigation } = props;
@@ -57,6 +57,23 @@ function FormAdd(props) {
   );
 }
 
+function UploadImage() {
+  const imageSelect = () => {
+    console.log("Imagenes");
+  };
+
+  return (
+    <View>
+      <Icon
+        type="material-community"
+        name="camera"
+        color="#7a7a7a"
+        containerStyle={styles.containerIcon}
+        onPress={imageSelect}
+      />
+    </View>
+  );
+}
 const styles = StyleSheet.create({
   scrollView: {
     height: "100%",
@@ -73,5 +90,23 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 0,
     margin: 0,
+  },
+  btnAddRestaurant: {
+    backgroundColor: "#00a680",
+    margin: 20,
+  },
+  viewImages: {
+    flexDirection: "row",
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 30,
+  },
+  containerIcon: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
+    height: 70,
+    width: 70,
+    backgroundColor: "#e3e3e3",
   },
 });
