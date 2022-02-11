@@ -52,11 +52,12 @@ export default function ChangePasswordForm(props) {
         .then(async () => {
           await firebase
             .auth()
-            .currentUser.updatePassword(formData.password)
+            .currentUser.updatePassword(formData.newPassword)
             .then(() => {
               isSetErrors = false;
               setIsLoading(false);
               setShowModal(false);
+              console.log(formData.password);
               firebase.auth().signOut();
             })
             .catch(() => {
