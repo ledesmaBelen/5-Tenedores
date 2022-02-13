@@ -1,39 +1,81 @@
-import React, { useState } from "react";
-import { Button, ScrollView, StyleSheet, View } from "react-native";
-import { Icon, Input } from "react-native-elements";
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  ScrollView,
+  StyleSheet,
+  View,
+  Image,
+  Dimensions,
+  Text,
+} from "react-native";
+import { Avatar, Icon, Input } from "react-native-elements";
+import * as ImagePicker from "expo-image-picker";
+import { map, result, size } from "lodash";
+import Modal from "../Modal";
+import * as Location from "expo-location";
+
+const widthScreen = Dimensions.get("window").width;
 
 export default function AddRestaurantForm(props) {
   const { setiIsLoading, navigation } = props;
   const [restaurantName, setrestaurantName] = useState("");
   const [restaurantAddress, setrestaurantAddress] = useState("");
   const [restaurantDescription, setrestaurantDescription] = useState("");
+  const [imagesSelected, setimagesSelected] = useState(null);
+  const [isVisibleMap, setisVisibleMap] = useState(false);
 
   const addRestaurant = () => {
     console.log("ok");
-    console.log("restaurantName:" + restaurantName);
-    console.log("restaurantadres:" + restaurantAddress);
-    console.log("restaurantdescrip:" + restaurantDescription);
+    console.log(imagesSelected);
   };
 
   return (
     <ScrollView style={styles.scrollView}>
+      <ImageRestaurant imagenRestaurant={imagesSelected} />
       <FormAdd
         setrestaurantName={setrestaurantName}
         setrestaurantAddress={setrestaurantAddress}
         setrestaurantDescription={setrestaurantDescription}
+        setisVisibleMap={setisVisibleMap}
+      />
+      <UploadImage
+        imagesSelected={imagesSelected}
+        setimagesSelected={setimagesSelected}
       />
       <Button
         title="Crear Restaurante"
         onPress={addRestaurant}
         buttonStyle={styles.btnAddRestaurant}
       />
+      <Map isVisibleMap={isVisibleMap} setisVisibleMap={setisVisibleMap} />
     </ScrollView>
   );
 }
+function ImageRestaurant(props) {
+  const { imagenRestaurant } = props;
 
+  return (
+    <View style={styles.viewPhoto}>
+      <Image
+        source={
+          imagenRestaurant
+            ? { uri: imagenRestaurant }
+            : require("../../../assets/10.1 no-image.png")
+        }
+        style={{ width: widthScreen, height: 200 }}
+      />
+    </View>
+  );
+}
+
+//OBJETO FORMULARIO
 function FormAdd(props) {
-  const { setrestaurantName, setrestaurantAddress, setrestaurantDescription } =
-    props;
+  const {
+    setrestaurantName,
+    setrestaurantAddress,
+    setrestaurantDescription,
+    setisVisibleMap,
+  } = props;
 
   return (
     <View style={styles.viewForm}>
@@ -46,6 +88,12 @@ function FormAdd(props) {
         placeholder="Dirección"
         containerStyle={styles.input}
         onChange={(e) => setrestaurantAddress(e.nativeEvent.text)}
+        rightIcon={{
+          type: "material-community",
+          name: "google-maps",
+          color: "#c2c2c2",
+          onPress: () => setisVisibleMap(true),
+        }}
       />
       <Input
         placeholder="Descripcion del restaurante"
@@ -57,13 +105,55 @@ function FormAdd(props) {
   );
 }
 
-function UploadImage() {
-  const imageSelect = () => {
-    console.log("Imagenes");
+function Map(props) {
+  const [location, setLocation] = useState(null);
+  const { isVisibleMap, setisVisibleMap } = props;
+
+  useEffect(() => {
+    (async () => {
+      const status = await Location.requestForegroundPermissionsAsync();
+      console.log(status);
+
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+      } else {
+        let location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
+        console.log(location);
+      }
+    })();
+  }, []);
+
+  return (
+    <Modal isVisible={isVisibleMap} setIsVisible={setisVisibleMap}>
+      <Text>Mapa</Text>
+    </Modal>
+  );
+}
+
+//SUBIR FOTO PARA RESTORANT
+function UploadImage(props) {
+  const { imagesSelected, setimagesSelected } = props;
+
+  const imageSelect = async () => {
+    let permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      console.log("Se require que acepte los permisos");
+    } else {
+      let pickerResult = await ImagePicker.launchImageLibraryAsync();
+
+      if (pickerResult.cancelled) {
+        console.log("Necesita seleccionar una imagen");
+      } else {
+        setimagesSelected(pickerResult.uri);
+      }
+    }
   };
 
   return (
-    <View>
+    <View styles={styles.viewImages}>
       <Icon
         type="material-community"
         name="camera"
@@ -74,6 +164,7 @@ function UploadImage() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   scrollView: {
     height: "100%",
@@ -108,5 +199,36 @@ const styles = StyleSheet.create({
     height: 70,
     width: 70,
     backgroundColor: "#e3e3e3",
+  },
+  miniatureStyle: {
+    width: 70,
+    height: 70,
+    marginRight: 10,
+  },
+  viewPhoto: {
+    alignItems: "center",
+    height: 200,
+    marginBottom: 20,
+  },
+  mapStyle: {
+    width: "100%",
+    height: 550,
+  },
+  viewMapBtn: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+  viewMapBtnContainerCancel: {
+    paddingLeft: 5,
+  },
+  viewMapBtnCancel: {
+    backgroundColor: "#a60d0d",
+  },
+  viewMapBtnContainerSave: {
+    paddingRight: 5,
+  },
+  viewMapBtnSave: {
+    backgroundColor: "#00a680",
   },
 });
