@@ -68,12 +68,12 @@ export default function LoginForm() {
         errorMessage={errors.errPass}
       />
       <Button
-        title="Iniciar Seccion"
+        title="Iniciar Sesión"
         containerStyle={styles.btnContainerLogin}
         buttonStyle={styles.btnLogin}
         onPress={onSubmit}
       />
-      <Loading isVisible={loading} text="Iniciando Seccion" />
+      <Loading isVisible={loading} text="Iniciando Sesión" />
     </View>
   );
 }

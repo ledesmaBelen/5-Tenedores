@@ -1,0 +1,16 @@
+instalar eas y crear el apk en android
+npm i -g eas-cli
+
+eas build -p android
+
+
+AIzaSyBVvwRKa4sSj_IWj7hybiOQBNXsYKPi4Kw
+API KEY GOOGLE
+
+expo fetch:adnroid:hashes (PARA CREAR CHUELLA DIGITAL)
+CREDENCIALES OBTENIDAS:
+Accessing credentials for belenadmin in project 5-tenedores
+Google Certificate Fingerprint:     1B:D3:0A:19:0A:D4:CD:52:AD:57:1D:18:16:BA:43:61:F5:97:A2:85
+Google Certificate Hash (SHA-1):    1BD30A190AD4CD52AD571D1816BA4361F597A285
+Google Certificate Hash (SHA-256):  593226C51F06F201922B01CC0A4381CCD2DD19BC016895E5F9115814987406D9
+Facebook Key Hash:                  G9MKGQrUzVKtVx0YFrpDYfWXooU=
