@@ -50,4 +50,32 @@ export function updatePass(isSetErrors, setIsLoading, setShowModal, formData){
     });
 }
 
+export const uploadImage = async (uri, setloadingText, setloading, uid) => {
+  setloadingText("Actualizando Avatar");
+  setloading(true);
+  const response = await fetch(uri);
+  const blob = await response.blob();
+
+  const ref = firebase.storage().ref().child(`avatar/${uid}`);
+  return ref.put(blob);
+};
+
+export const updatePhotoUrl = (setloading, uid) => {
+  firebase
+    .storage()
+    .ref(`avatar/${uid}`)
+    .getDownloadURL()
+    .then(async (response) => {
+      console.log(response);
+      const update = {
+        photoURL: response,
+      };
+      await firebase.auth().currentUser.updateProfile(update);
+      setloading(false);
+    })
+    .catch(() => {
+      console.log("Error al actualizar el avatar");
+    });
+};
+
 

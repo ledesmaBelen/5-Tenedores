@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as firebase from "firebase";
 import UserGuest from "./UserGuest";
-import UserLogger from "./UserLogger";
+import UserLogged from "./UserLogged";
 import Loading from "../../components/Loading";
 
 export default function Account() {
@@ -20,5 +20,5 @@ export default function Account() {
   if (login === null) return <Loading isVisible={true} text="Cargando..." />;
   //SI EL USIARIO ESTA LOGGEADO RETORNA USERLOGGER
   //SI NO ESTA LOG SOLO PUEDE EL CONTENIDO DE USERGUEST
-  return login ? <UserLogger /> : <UserGuest />;
+  return login ? <UserLogged /> : <UserGuest />;
 }
