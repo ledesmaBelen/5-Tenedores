@@ -4,6 +4,7 @@ import { Icon } from "react-native-elements";
 import { app } from "../../utils/firebase";
 import firebase from "firebase";
 import "firebase/firestore";
+import ListRestaurants from "../../components/Restaurants/ListRestaurants";
 
 const db = firebase.firestore(app);
 
@@ -13,9 +14,7 @@ export default function Restaurants(props) {
   const [restaurants, setrestaurants] = useState([]);
   const [totalRestaurants, settotalRestaurants] = useState(0);
   const [startRestaurants, setstartRestaurants] = useState(null);
-  const limitRestaurants = 2;
-
-  console.log(restaurants);
+  const limitRestaurants = 10;
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((userInfo) => {
@@ -44,14 +43,14 @@ export default function Restaurants(props) {
           restaurant.id = doc.id;
           resultRestaurants.push(restaurant);
         });
+
         setrestaurants(resultRestaurants);
-        console.log(restaurants);
       });
   }, []);
 
   return (
     <View style={StyleSheet.viewBody}>
-      <Text>Restaurants</Text>
+      <ListRestaurants restaurants={restaurants} />
       {user && (
         <Icon
           reverse
@@ -73,7 +72,7 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     position: "absolute",
-    bottom: -400,
+    bottom: 10,
     right: 10,
     alignItems: "flex-end",
     alignSelf: "flex-end",
