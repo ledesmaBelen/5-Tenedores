@@ -1,7 +1,6 @@
 import React from "react";
 import {View, StyleSheet, Text} from "react-native";
 import {Avatar} from "react-native-elements";
-import * as firebase from "firebase";
 import "firebase/storage";
 import "firebase/firestore";
 import { Camera } from 'expo-camera';
