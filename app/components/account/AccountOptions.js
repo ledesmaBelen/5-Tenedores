@@ -45,6 +45,7 @@ export default function AccountOptions(props) {
         break;
     }
   };
+  
   const menuOptions = generateOptions(selectedComponent);
   return (
     <View>

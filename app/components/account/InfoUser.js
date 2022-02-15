@@ -11,6 +11,7 @@ export default function InfoUser(props) {
     userInfo: { photoURL, displayName, email },
   } = props;
 
+
   const changeAvatar = async () => {
     /*const resultPermission = await Permissions.askAsync(
       Permissions.CAMERA_ROLL

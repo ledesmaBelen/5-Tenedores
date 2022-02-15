@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Button, Input } from "react-native-elements";
 import { View, StyleSheet } from "react-native";
-import * as firebase from "firebase";
+import {updateName} from "../../services/UserService";
+
 
 export default function ChangeDisplayNameForm(props) {
   const { displayName, setShowModal, setreloadUserInfo } = props;
@@ -20,19 +21,20 @@ export default function ChangeDisplayNameForm(props) {
       const update = {
         displayName: newDisplayName,
       };
-      firebase
-        .auth()
-        .currentUser.updateProfile(update)
-        .then(() => {
-          setisLoading(false);
-          setreloadUserInfo(true);
-          setShowModal(false);
-        })
-        .catch((err) => {
-          seterror("error al actualizar el nombre");
-          console.log(err);
-          setisLoading(false);
-        });
+      updateName(setisLoading, setreloadUserInfo, setShowModal, update);
+      // firebase
+      //   .auth()
+      //   .currentUser.updateProfile(update)
+      //   .then(() => {
+      //     setisLoading(false);
+      //     setreloadUserInfo(true);
+      //     setShowModal(false);
+      //   })
+      //   .catch((err) => {
+      //     seterror("error al actualizar el nombre");
+      //     console.log(err);
+      //     setisLoading(false);
+      //   });
     }
   };
   return (
