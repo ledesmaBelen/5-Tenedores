@@ -8,7 +8,7 @@ import AccountOptions from "../../components/account/AccountOptions";
 
 export default function UserLogger() {
   const [userInfo, setuserInfo] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setloading] = useState(false);
   const [loadingText, setloadingText] = useState("");
   const [reloadUserInfo, setreloadUserInfo] = useState(false);
 
@@ -21,8 +21,17 @@ export default function UserLogger() {
   }, [reloadUserInfo]);
 
   return (
+
     <View style={styles.viewUserInfo}>
-      {userInfo && <InfoUser userInfo={userInfo} />}
+      
+      {userInfo && (
+            <InfoUser 
+              userInfo={userInfo} 
+              setloadingText={setloadingText} 
+              setloading={setloading}
+            />
+      )}
+
       <AccountOptions
         userInfo={userInfo}
         setreloadUserInfo={setreloadUserInfo}
