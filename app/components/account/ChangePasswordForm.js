@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Input, Button } from "react-native-elements";
 import { size } from "lodash";
-import * as firebase from "firebase";
 import { reauthenticate } from "../../utils/api";
+import {updatePass} from "../../services/UserService";
 
 export default function ChangePasswordForm(props) {
   const { setShowModal } = props;
@@ -50,22 +50,7 @@ export default function ChangePasswordForm(props) {
       setIsLoading(true);
       await reauthenticate(formData.password)
         .then(async () => {
-          await firebase
-            .auth()
-            .currentUser.updatePassword(formData.newPassword)
-            .then(() => {
-              isSetErrors = false;
-              setIsLoading(false);
-              setShowModal(false);
-              console.log(formData.password);
-              firebase.auth().signOut();
-            })
-            .catch(() => {
-              errorsTemp = {
-                other: "Error al actualizar la contraseña",
-              };
-              setIsLoading(false);
-            });
+          updatePass(isSetErrors, setIsLoading, setShowModal, formData);
         })
         .catch(() => {
           errorsTemp = {

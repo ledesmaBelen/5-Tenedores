@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Input, Button } from "react-native-elements";
-import * as firebase from "firebase";
 import { validateEmail } from "../../utils/validations";
 import { reauthenticate } from "../../utils/api";
+import {updateEmail} from "../../services/UserService";
 
 export default function ChangeEmailForm(props) {
   const { email, setShowModal, setreloadUserInfo } = props;
@@ -20,41 +20,21 @@ export default function ChangeEmailForm(props) {
     console.log(formData.email);
     setErrors({});
     if (!formData.email || email === formData.email) {
-      console.log("email vacio");
       setErrors({
         email: "El email no ha cambiado",
       });
-      console.log(errors);
+      
     } else if (!validateEmail(formData.email)) {
-      console.log("email incorrecto");
       setErrors({ email: "Email incorrecto" });
-      console.log(errors);
     } else if (!formData.password) {
-      console.log("paswword vacia");
       setErrors({ password: "La contraseña no puede estar vacia" });
-      console.log(errors);
     } else {
       setIsLoading(true);
       reauthenticate(formData.password)
         .then(() => {
-          firebase
-            .auth()
-            .currentUser.updateEmail(formData.email)
-            .then(() => {
-              setIsLoading(false);
-              setreloadUserInfo(true);
-              console.log("email actualizado correctamente");
-
-              setShowModal(false);
-            })
-            .catch((errr) => {
-              console.log(errr);
-              setErrors("Error al actualizar el email");
-              setIsLoading(false);
-            });
+          updateEmail(formData, setIsLoading, setreloadUserInfo, setShowModal, setErrors);
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
           setIsLoading(false);
           setErrors({ password: "La contraseña no es correcta" });
         });
@@ -95,6 +75,7 @@ export default function ChangeEmailForm(props) {
         containerStyle={styles.btnContainer}
         buttonStyle={styles.btn}
         onPress={onSubmit}
+        isLoading={isLoading}
       />
     </View>
   );

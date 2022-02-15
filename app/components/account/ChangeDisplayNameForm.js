@@ -22,19 +22,6 @@ export default function ChangeDisplayNameForm(props) {
         displayName: newDisplayName,
       };
       updateName(setisLoading, setreloadUserInfo, setShowModal, update);
-      // firebase
-      //   .auth()
-      //   .currentUser.updateProfile(update)
-      //   .then(() => {
-      //     setisLoading(false);
-      //     setreloadUserInfo(true);
-      //     setShowModal(false);
-      //   })
-      //   .catch((err) => {
-      //     seterror("error al actualizar el nombre");
-      //     console.log(err);
-      //     setisLoading(false);
-      //   });
     }
   };
   return (
