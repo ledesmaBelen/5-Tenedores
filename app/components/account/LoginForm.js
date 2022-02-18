@@ -28,6 +28,7 @@ export default function LoginForm() {
       login(formData, setLoading, navigation);
     }
   };
+  
   return (
     <View styles={styles.formContainer}>
       <Input
