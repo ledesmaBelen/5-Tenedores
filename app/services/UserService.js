@@ -87,7 +87,7 @@ export function login(formData, setLoading, navigation){
     .signInWithEmailAndPassword(formData.email, formData.password)
     .then(() => {
         setLoading(false);
-        navigation.navigate("cuenta");
+        navigation.navigate("account");
     })
     .catch(() =>{
         setLoading(false);
@@ -101,7 +101,7 @@ export async function register(formData, navigation, setLoading){
     .createUserWithEmailAndPassword(formData.email, formData.password)
     .then(() => {
         setLoading(false);
-        navigation.navigate("cuenta");
+        navigation.navigate("account");
     })
     .catch(()=> {
         setLoading(false);

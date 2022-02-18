@@ -1,10 +1,26 @@
-import { View, Text } from "react-native";
 import React from "react";
+import {StyleSheet, View, Image} from 'react-native';
+
 
 export default function Search() {
-  return (
-    <View>
-      <Text>Search</Text>
-    </View>
-  );
+    return(
+        <View style={styles.container}>
+            <Image
+                source={require("../../assets/construccion.jpg")}
+                resizeMode="contain"
+                style={styles.logo}
+            />
+        </View>
+    );
 }
+
+const styles = StyleSheet.create({
+    logo:{
+        width:"100%",
+        height:400,
+    },
+    container:{
+        flex:1,
+        justifyContent:"center",
+    },
+});

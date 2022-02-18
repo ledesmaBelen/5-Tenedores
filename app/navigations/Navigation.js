@@ -31,7 +31,7 @@ export default function Navigation() {
         <Tab.Screen
           name="favorites"
           component={FavoritesStack}
-          options={{ title: "Favorites" }}
+          options={{ title: "Favoritos" }}
         />
         <Tab.Screen
           name="top-restaurants"
@@ -41,12 +41,12 @@ export default function Navigation() {
         <Tab.Screen
           name="search"
           component={SearchStack}
-          options={{ title: "Search" }}
+          options={{ title: "Buscar" }}
         />
         <Tab.Screen
           name="account"
           component={AccountStack}
-          options={{ title: "Account" }}
+          options={{ title: "Cuenta" }}
         />
       </Tab.Navigator>
     </NavigationContainer>
