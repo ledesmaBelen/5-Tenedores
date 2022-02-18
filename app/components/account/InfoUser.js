@@ -1,8 +1,6 @@
 import React from "react";
 import {View, StyleSheet, Text} from "react-native";
 import {Avatar} from "react-native-elements";
-import "firebase/storage";
-import "firebase/firestore";
 import { Camera } from 'expo-camera';
 import * as ImagePicker from "expo-image-picker";
 import { uploadImage, updatePhotoUrl } from "../../services/UserService";
@@ -17,7 +15,6 @@ const changeAvatar = async () => {
     console.log("cambiar avatar");
     const resultPermission = await Camera.requestCameraPermissionsAsync();
     const resultPermissionCamera =resultPermission.status;
-    console.log(resultPermissionCamera)
 
     if (resultPermissionCamera === "denied") {
       console.log("Es necesario aceptar los permisos de la galeria");
@@ -41,7 +38,6 @@ const changeAvatar = async () => {
       }
     }
 };
-
 
     return(
       <View style={styles.viewUserInfo}>

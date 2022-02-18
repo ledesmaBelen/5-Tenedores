@@ -2,10 +2,9 @@ import { isEmpty } from "lodash";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Input, Icon, Button } from "react-native-elements";
-
-import { validateEmail } from "../../utils/validations";
-import * as firebase from "firebase";
 import { useNavigation } from "@react-navigation/native";
+import { validateEmail } from "../../utils/validations";
+import { login } from "../../services/UserService";
 import Loading from "../Loading";
 
 export default function LoginForm() {
@@ -26,18 +25,7 @@ export default function LoginForm() {
       seterrors({ errEmail: "El email es incorrecto" });
     } else {
       setLoading(true);
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(formData.email, formData.password)
-        .then(() => {
-          setLoading(false);
-          console.log("ok");
-          navigation.navigate("account");
-        })
-        .catch(() => {
-          seterrors({ errPass: "El email o contraseña es incorrecto" });
-          setLoading(false);
-        });
+      login(formData, setLoading, navigation);
     }
   };
   return (

@@ -4,8 +4,8 @@ import { Input, Icon, Button } from "react-native-elements";
 import Loading from "../Loading";
 import { validateEmail } from "../../utils/validations";
 import { size, isEmpty } from "lodash";
-import * as firebase from "firebase";
 import { useNavigation } from "@react-navigation/native";
+import { register } from "../../services/UserService";
 
 //LOS ICONOS SON PARTE DE REACT
 export default function RegisterForm() {
@@ -40,17 +40,7 @@ export default function RegisterForm() {
       setErrors({ errPass: "La contraseña debe tener al menos 6 caracteres" });
     } else {
       setLoading(true);
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(fromData.email, fromData.password)
-        .then((res) => {
-          navigation.navigate("account");
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-        });
+      register(formData, navigation, setLoading);
     }
   };
   //Onchange tiene un evento y un tipo

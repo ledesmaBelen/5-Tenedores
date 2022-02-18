@@ -36,6 +36,7 @@ export default function UserLogger() {
         userInfo={userInfo}
         setreloadUserInfo={setreloadUserInfo}
       />
+      
       <Button
         title="Cerrar sesion"
         buttonStyle={styles.btnCloseSesion}

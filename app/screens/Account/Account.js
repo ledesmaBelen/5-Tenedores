@@ -1,10 +1,8 @@
-import { View, Text } from "react-native";
-import React, { useEffect, useState } from "react";
-import * as firebase from "firebase";
-import UserGuest from "./UserGuest";
-import Login from "./Login";
+import React, { useState, useEffect} from "react";
 import UserLogged from "./UserLogged";
+import Login from "../account/Login";
 import Loading from "../../components/Loading";
+import { loginCheck } from "../../services/UserService";
 
 export default function Account() {
   const [login, setLogin] = useState(null);
@@ -12,9 +10,7 @@ export default function Account() {
   //SE ACTUALIZARA LAS VECES QUE HAYAN VCAMBIOS SINO SOLO SE EJECUTA CUANDO CARGA EL COMPONENTE
   //SE VERIFICA SI EL USUARIO ESTA LOGEADO Y RETORNA USERLOGGER, SINO RETORNA USERGUEST
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      !user ? setLogin(false) : setLogin(true);
-    });
+    loginCheck(setLogin);
   }, []);
 
   //SI ES NULL MUESTRA EL COMPONENTE LOADING CARGANDO

@@ -24,6 +24,7 @@ export default function ChangeDisplayNameForm(props) {
       updateName(setisLoading, setreloadUserInfo, setShowModal, update);
     }
   };
+  
   return (
     <View style={styles.view}>
       <Input

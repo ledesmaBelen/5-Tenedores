@@ -4,6 +4,7 @@ import Restaurants from "../screens/Restaurants/Restaurants";
 import AddRestaurant from "../screens/Restaurants/AddRestaurant";
 import { StyleSheet } from "react-native";
 
+
 //AÑADIMOS EL STACK DE ARRIBA,
 //SOLO PUEDE SER VISIBLE UNO A LA VEZ,LOS OTROS ESTAN ACCESIBLES PERO NO VISIBLES
 const Stack = createStackNavigator();
@@ -24,3 +25,9 @@ export default function RestaurantsStack() {
     </Stack.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  iconR: {
+    color: "#00a680",
+  },
+});

@@ -1,7 +1,10 @@
-import * as firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/storage";
+import "firebase/firestore";
 
 export function updateName(setisLoading, setreloadUserInfo, setShowModal, update){
-    firebase
+  firebase
     .auth()
     .currentUser.updateProfile(update)
     .then(() => {
@@ -17,7 +20,7 @@ export function updateName(setisLoading, setreloadUserInfo, setShowModal, update
 }
 
 export function updateEmail(formData, setIsLoading, setreloadUserInfo, setShowModal, setErrors){
-    firebase
+  firebase
     .auth()
     .currentUser.updateEmail(formData.email)
     .then(() => {
@@ -32,7 +35,7 @@ export function updateEmail(formData, setIsLoading, setreloadUserInfo, setShowMo
 }
 
 export function updatePass(isSetErrors, setIsLoading, setShowModal, formData){
-    firebase
+  firebase
     .auth()
     .currentUser.updatePassword(formData.newPassword)
     .then(() => {
@@ -78,4 +81,36 @@ export const updatePhotoUrl = (setloading, uid) => {
     });
 };
 
+export function login(formData, setLoading, navigation){
+  firebase
+    .auth()
+    .signInWithEmailAndPassword(formData.email, formData.password)
+    .then(() => {
+        setLoading(false);
+        navigation.navigate("cuenta");
+    })
+    .catch(() =>{
+        setLoading(false);
+        console.log("verifique sus credenciales");
+    })
+}
+
+export async function register(formData, navigation, setLoading){
+  await firebase
+    .auth()
+    .createUserWithEmailAndPassword(formData.email, formData.password)
+    .then(() => {
+        setLoading(false);
+        navigation.navigate("cuenta");
+    })
+    .catch(()=> {
+        setLoading(false);
+    });
+}
+
+export function loginCheck(setLogin){
+    firebase.auth().onAuthStateChanged((user) => {
+      !user? setLogin(false) : setLogin(true);
+  })
+}
 
