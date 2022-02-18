@@ -2,12 +2,6 @@ import { isEmpty } from "lodash";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Input, Icon, Button } from "react-native-elements";
-<<<<<<< HEAD
-import { obtenerUser } from "../../services/RestaurantsService";
-import { validateEmail } from "../../utils/validations";
-import * as firebase from "firebase";
-=======
->>>>>>> d942990ffc545a9a2b80340a114021fe952336fa
 import { useNavigation } from "@react-navigation/native";
 import { validateEmail } from "../../utils/validations";
 import { login } from "../../services/UserService";
@@ -31,23 +25,7 @@ export default function LoginForm() {
       seterrors({ errEmail: "El email es incorrecto" });
     } else {
       setLoading(true);
-<<<<<<< HEAD
-
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(formData.email, formData.password)
-        .then(() => {
-          setLoading(false);
-          console.log("ok");
-          navigation.navigate("account");
-        })
-        .catch(() => {
-          seterrors({ errPass: "El email o contraseña es incorrecto" });
-          setLoading(false);
-        });
-=======
       login(formData, setLoading, navigation);
->>>>>>> d942990ffc545a9a2b80340a114021fe952336fa
     }
   };
   return (
