@@ -17,7 +17,7 @@ export default function Login() {
         <LoginForm />
         <CreateUser />
         <Divider style={styles.divider} />
-        <Text>Social Login</Text>
+        
       </View>
     </ScrollView>
   );

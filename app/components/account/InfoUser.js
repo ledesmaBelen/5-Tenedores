@@ -1,11 +1,9 @@
 import React from "react";
 import {View, StyleSheet, Text} from "react-native";
 import {Avatar} from "react-native-elements";
-import * as firebase from "firebase";
-import "firebase/storage";
-import "firebase/firestore";
 import { Camera } from 'expo-camera';
 import * as ImagePicker from "expo-image-picker";
+import { uploadImage, updatePhotoUrl } from "../../services/UserService";
 
 export default function InfoUser(props) {
   const  {userInfo: { photoURL, displayName, email, uid},
@@ -17,7 +15,6 @@ const changeAvatar = async () => {
     console.log("cambiar avatar");
     const resultPermission = await Camera.requestCameraPermissionsAsync();
     const resultPermissionCamera =resultPermission.status;
-    console.log(resultPermissionCamera)
 
     if (resultPermissionCamera === "denied") {
       console.log("Es necesario aceptar los permisos de la galeria");
@@ -30,9 +27,9 @@ const changeAvatar = async () => {
       if (result.cancelled) {
         console.log("Has cerrado la seleccion de imagenes");
       } else {
-        uploadImage(result.uri)
+        uploadImage(result.uri, setloadingText, setloading, uid)
           .then(() => {
-            updatePhotoUrl();
+            updatePhotoUrl(setloading, uid);
           })
           .catch((err) => {
             console.log(err);
@@ -40,34 +37,6 @@ const changeAvatar = async () => {
           });
       }
     }
-};
-
-const uploadImage = async (uri) => {
-    setloadingText("Actualizando Avatar");
-    setloading(true);
-    const response = await fetch(uri);
-    const blob = await response.blob();
-
-    const ref = firebase.storage().ref().child(`avatar/${uid}`);
-    return ref.put(blob);
-};
-
-const updatePhotoUrl = () => {
-    firebase
-      .storage()
-      .ref(`avatar/${uid}`)
-      .getDownloadURL()
-      .then(async (response) => {
-        console.log(response);
-        const update = {
-          photoURL: response,
-        };
-        await firebase.auth().currentUser.updateProfile(update);
-        setloading(false);
-      })
-      .catch(() => {
-        console.log("Error al actualizar el avatar");
-      });
 };
 
     return(

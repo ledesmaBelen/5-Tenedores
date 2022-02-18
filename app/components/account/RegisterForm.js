@@ -4,8 +4,8 @@ import { Input, Icon, Button } from "react-native-elements";
 import Loading from "../Loading";
 import { validateEmail } from "../../utils/validations";
 import { size, isEmpty } from "lodash";
-import * as firebase from "firebase";
 import { useNavigation } from "@react-navigation/native";
+import { register } from "../../services/UserService";
 
 //LOS ICONOS SON PARTE DE REACT
 export default function RegisterForm() {
@@ -16,7 +16,7 @@ export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordRepeat, setShowPasswordRepeat] = useState(false);
   //HOOK PARA DATOS DINAMCOS DEL FORMULARIO
-  const [fromData, setfromData] = useState(defaultFromValue());
+  const [formData, setformData] = useState(defaultFromValue());
   const [errors, setErrors] = useState({});
   //COMPONENTE LOADING PARA CARGA MIENTRAS CREA USER
   const [loading, setLoading] = useState(false);
@@ -26,38 +26,28 @@ export default function RegisterForm() {
   const onSubmit = () => {
     setErrors({});
     if (
-      isEmpty(fromData.email) ||
-      isEmpty(fromData.password) ||
-      isEmpty(fromData.passwordRepeat)
+      isEmpty(formData.email) ||
+      isEmpty(formData.password) ||
+      isEmpty(formData.passwordRepeat)
     ) {
       setErrors({ errEmail: "Todos los campos son obligatorios" });
-    } else if (!validateEmail(fromData.email)) {
+    } else if (!validateEmail(formData.email)) {
       setErrors({ errEmail: "El email es incorrecto" });
-    } else if (fromData.password !== fromData.passwordRepeat) {
+    } else if (formData.password !== formData.passwordRepeat) {
       setErrors({ errPass: "Las contraseñas deben ser iguales" });
       console.log("");
-    } else if (size(fromData.password) < 6) {
+    } else if (size(formData.password) < 6) {
       setErrors({ errPass: "La contraseña debe tener al menos 6 caracteres" });
     } else {
       setLoading(true);
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(fromData.email, fromData.password)
-        .then((res) => {
-          navigation.navigate("account");
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-        });
+      register(formData, navigation, setLoading);
     }
   };
   //Onchange tiene un evento y un tipo
   // se pone en corchetes porque la key es un valor dinamico
   const onChange = (e, type) => {
-    //...fromData => para obtener las propiedades del objeto
-    setfromData({ ...fromData, [type]: e.nativeEvent.text });
+    //...formData => para obtener las propiedades del objeto
+    setformData({ ...formData, [type]: e.nativeEvent.text });
   };
 
   return (
