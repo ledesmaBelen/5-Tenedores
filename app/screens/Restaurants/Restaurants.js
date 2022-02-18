@@ -1,9 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Icon } from "react-native-elements";
+import { useFocusEffect } from "@react-navigation/native";
+import { Button, Icon } from "react-native-elements";
 import { app } from "../../utils/firebase";
 import firebase from "firebase";
 import "firebase/firestore";
+import {
+  verificarEstado,
+  listarRestaurantes,
+  cantidadRestaurants,
+} from "../../services/RestaurantsService";
 import ListRestaurants from "../../components/Restaurants/ListRestaurants";
 
 const db = firebase.firestore(app);
@@ -14,43 +20,104 @@ export default function Restaurants(props) {
   const [restaurants, setrestaurants] = useState([]);
   const [totalRestaurants, settotalRestaurants] = useState(0);
   const [startRestaurants, setstartRestaurants] = useState(null);
+  const [isLoading, setisLoading] = useState(false);
   const limitRestaurants = 10;
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((userInfo) => {
-      setuser(userInfo);
-    });
+    verificarEstado(setuser);
+    // firebase.auth().onAuthStateChanged((userInfo) => {
+    //   setuser(userInfo);
+    // });
   }, []);
 
   useEffect(() => {
-    db.collection("restaurants")
-      .get()
-      .then((snap) => {
-        console.log(snap.size);
-        settotalRestaurants(snap.size);
-      });
-    const resultRestaurants = [];
+    cantidadRestaurants(settotalRestaurants);
+    listarRestaurantes(limitRestaurants, setrestaurants, setstartRestaurants);
+    // db.collection("restaurants")
+    //   .get()
+    //   .then((snap) => {
+    //     console.log(snap.size);
+    //     console.log("entro en funcion cantidadresto");
+    //     settotalRestaurants(snap.size);
+    //   });
+    // const resultRestaurants = [];
 
+    // db.collection("restaurants")
+    //   .orderBy("createAt", "desc")
+    //   .limit(limitRestaurants)
+    //   .get()
+    //   .then((response) => {
+    //     setstartRestaurants(response.docs[response.docs.length - 1]);
+
+    //     response.forEach((doc) => {
+    //       const restaurant = doc.data();
+    //       restaurant.id = doc.id;
+    //       resultRestaurants.push(restaurant);
+    //     });
+    //     console.log("entro en funcion listarrestyaurants");
+    //     setrestaurants(resultRestaurants);
+    //   });
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      db.collection("restaurants")
+        .get()
+        .then((snap) => {
+          settotalRestaurants(snap.size);
+        });
+
+      const resultRestaurants = [];
+
+      db.collection("restaurants")
+        .orderBy("createAt", "desc")
+        .limit(limitRestaurants)
+        .get()
+        .then((response) => {
+          setstartRestaurants(response.docs[response.docs.length - 1]);
+
+          response.forEach((doc) => {
+            const restaurant = doc.data();
+            restaurant.id = doc.id;
+            resultRestaurants.push(restaurant);
+          });
+          setrestaurants(resultRestaurants);
+        });
+    }, [])
+  );
+
+  const handleLoadMore = () => {
+    const resultRestaurants = [];
+    restaurants.length < totalRestaurants && setisLoading(true);
     db.collection("restaurants")
       .orderBy("createAt", "desc")
+      .startAfter(startRestaurants.data().createAt)
       .limit(limitRestaurants)
       .get()
       .then((response) => {
-        setstartRestaurants(response.docs[response.docs.length - 1]);
-
+        if (response.docs.length > 0) {
+          setstartRestaurants(response.docs[response.docs.length - 1]);
+        } else {
+          setisLoading(false);
+        }
         response.forEach((doc) => {
           const restaurant = doc.data();
           restaurant.id = doc.id;
           resultRestaurants.push(restaurant);
         });
 
-        setrestaurants(resultRestaurants);
+        setrestaurants([...restaurants, ...resultRestaurants]);
       });
-  }, []);
+  };
 
   return (
     <View style={StyleSheet.viewBody}>
-      <ListRestaurants restaurants={restaurants} />
+      <ListRestaurants
+        restaurants={restaurants}
+        handleLoadMore={handleLoadMore}
+        isLoading={isLoading}
+      />
+
       {user && (
         <Icon
           reverse

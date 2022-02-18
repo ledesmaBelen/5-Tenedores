@@ -9,7 +9,7 @@ export default function Login() {
   return (
     <ScrollView>
       <Image
-        source={require("../../../assets/7.1 5-tenedores-letras-icono-logo.png")}
+        source={require("../../../assets/tenedores.png")}
         resizeMode="contain"
         style={styles.logo}
       />

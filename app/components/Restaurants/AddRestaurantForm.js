@@ -8,22 +8,35 @@ import {
   Dimensions,
 } from "react-native";
 import { Avatar, Icon, Input } from "react-native-elements";
+import {
+  agregarunRestaurant,
+  validarInfoResto,
+  uploadImageStorageService,
+  obtenerlaLocalizacionService,
+  imageSelectService,
+} from "../../services/RestaurantsService";
 import * as ImagePicker from "expo-image-picker";
 import { map, result, size } from "lodash";
 import Modal from "../Modal";
 import MapView from "react-native-maps";
 import * as Location from "expo-location";
-import uuid from "random-uuid-v4";
 import { app } from "../../utils/firebase";
+import uuid from "random-uuid-v4";
 import firebase from "firebase/app";
 import "firebase/storage";
 import "firebase/firestore";
-// definimos la db
+
 const db = firebase.firestore(app);
 const widthScreen = Dimensions.get("window").width;
 
 export default function AddRestaurantForm(props) {
-  const { setisLoading, navigation } = props;
+  const {
+    setisLoading,
+    navigation,
+    setrestaurants,
+    setstartRestaurants,
+    limitRestaurants,
+  } = props;
   const [restaurantName, setrestaurantName] = useState("");
   const [restaurantAddress, setrestaurantAddress] = useState("");
   const [restaurantDescription, setrestaurantDescription] = useState("");
@@ -32,59 +45,77 @@ export default function AddRestaurantForm(props) {
   const [isVisibleMap, setisVisibleMap] = useState(false);
 
   const addRestaurant = () => {
-    if (!restaurantName || !restaurantAddress || !restaurantDescription) {
-      console.log("Todos los campos son obligatorios");
-    } else if (!imagesSelected) {
-      console.log("El restaurante debe tener una fotografia");
-    } else if (!locationRestaurant) {
-      console.log("Tienes que localizar el restaurante en el mapa");
-    } else {
+    if (
+      validarInfoResto(
+        restaurantName,
+        restaurantAddress,
+        restaurantDescription,
+        imagesSelected,
+        locationRestaurant
+      )
+    ) {
       setisLoading(true);
-      uploadImageStorage().then((response) => {
+      uploadImageStorageService(imagesSelected).then((response) => {
         console.log(response);
-        db.collection("restaurants")
-          .add({
-            name: restaurantName,
-            address: restaurantAddress,
-            descrption: restaurantDescription,
-            location: locationRestaurant,
-            images: response,
-            rating: 0,
-            quantifyVoting: 0,
-            createAt: new Date(),
-            createBy: firebase.auth().currentUser.uid,
-          })
-          .then(() => {
-            setisLoading(false);
-            navigation.navigate("restaurants");
-          })
-          .catch(() => {
-            setisLoading(false);
-            console.log("Error al subir el restaurante, intentelo más tarde");
-          });
+        agregarunRestaurant(
+          restaurantName,
+          restaurantAddress,
+          restaurantDescription,
+          locationRestaurant,
+          response
+        );
+
+        setTimeout(() => {
+          setisLoading(false);
+          navigation.navigate("restaurants");
+        }, 3000);
       });
     }
   };
 
-  const uploadImageStorage = async () => {
-    const imageBlob = [];
+  // db.collection("restaurants")
+  //   .add({
+  //     name: restaurantName,
+  //     address: restaurantAddress,
+  //     descrption: restaurantDescription,
+  //     location: locationRestaurant,
+  //     images: response,
+  //     rating: 0,
+  //     quantifyVoting: 0,
+  //     createAt: new Date(),
+  //     createBy: firebase.auth().currentUser.uid,
+  //   })
+  //   .then(() => {
+  //     setisLoading(false);
+  //     navigation.navigate("restaurants");
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //     setisLoading(false);
+  //     console.log("Error al subir el restaurante, intentelo más tarde");
+  //   });
 
-    const response = await fetch(imagesSelected);
-    const blob = await response.blob();
-    const ref = firebase.storage().ref("restaurants").child(uuid());
-    await ref.put(blob).then(async (result) => {
-      await firebase
-        .storage()
-        .ref(`restaurants/${result.metadata.name}`)
-        .getDownloadURL()
-        .then((photoUrl) => {
-          console.log(photoUrl);
-          imageBlob.push(photoUrl);
-        });
-    });
+  // const uploadImageStorage = async () => {
+  //   const imageBlob = [];
+  //   const response = await fetch(imagesSelected);
+  //   const blob = await response.blob();
 
-    return imageBlob[0];
-  };
+  //   const ref = firebase.storage().ref("restaurants").child(uuid());
+  //   await ref.put(blob).then(async (result) => {
+  //     await firebase
+  //       .storage()
+  //       .ref(`restaurants/${result.metadata.name}`)
+  //       .getDownloadURL()
+  //       .then((photoUrl) => {
+  //         console.log(photoUrl);
+  //         imageBlob.push(photoUrl);
+  //       })
+  //       .catch((err) => console.log(err));
+  //   });
+
+  //   return imageBlob[0];
+  // };
+
   return (
     <ScrollView style={styles.scrollView}>
       <ImageRestaurant imagenRestaurant={imagesSelected} />
@@ -112,6 +143,7 @@ export default function AddRestaurantForm(props) {
     </ScrollView>
   );
 }
+
 function ImageRestaurant(props) {
   const { imagenRestaurant } = props;
 
@@ -172,23 +204,24 @@ function Map(props) {
   const [location, setLocation] = useState(null);
 
   useEffect(() => {
-    (async () => {
-      const result = await Location.requestForegroundPermissionsAsync();
+    obtenerlaLocalizacionService(setLocation);
+    // (async () => {
+    //   const result = await Location.requestForegroundPermissionsAsync();
 
-      if (result.status !== "granted") {
-        console.log("Permission to access location was denied");
-      } else {
-        const loc = await Location.getCurrentPositionAsync({});
-        const loca = {
-          latitude: loc.coords.latitude,
-          longitude: loc.coords.longitude,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001,
-        };
+    //   if (result.status !== "granted") {
+    //     console.log("Permission to access location was denied");
+    //   } else {
+    //     const loc = await Location.getCurrentPositionAsync({});
+    //     const loca = {
+    //       latitude: loc.coords.latitude,
+    //       longitude: loc.coords.longitude,
+    //       latitudeDelta: 0.001,
+    //       longitudeDelta: 0.001,
+    //     };
 
-        setLocation(loca);
-      }
-    })();
+    //     setLocation(loca);
+    //   }
+    // })();
   }, []);
 
   const confirmLocation = () => {
@@ -216,16 +249,18 @@ function Map(props) {
             />
           </MapView>
         )}
-        <View style={styles.viewMapBtnContainerSave}>
+        <View style={styles.viewMapBtn}>
           <Button
-            title="Guardar Ubicación"
+            title="Guardar Ubicacion"
+            containerStyle={styles.viewMapBtnContainerSave}
             buttonStyle={styles.viewMapBtnSave}
             onPress={confirmLocation}
           />
           <Button
-            title="Cancelar Ubicación"
+            title="Cancelar Ubicacion"
+            containerStyle={styles.viewMapBtnContainerCancel}
             buttonStyle={styles.viewMapBtnCancel}
-            onPress={() => setisVisibleMap(false)}
+            onPress={() => setIsVisibleMap(false)}
           />
         </View>
       </View>
@@ -237,22 +272,26 @@ function Map(props) {
 function UploadImage(props) {
   const { imagesSelected, setimagesSelected } = props;
 
-  const imageSelect = async () => {
-    let permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      console.log("Se require que acepte los permisos");
-    } else {
-      let pickerResult = await ImagePicker.launchImageLibraryAsync();
-
-      if (pickerResult.cancelled) {
-        console.log("Necesita seleccionar una imagen");
-      } else {
-        setimagesSelected(pickerResult.uri);
-      }
-    }
+  const imageSelect = () => {
+    imageSelectService(setimagesSelected);
   };
+  //  const imageSelect = async () => {
+  //   //imageSelectService(setimagesSelected);
+  //   let permissionResult =
+  //     await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+  //   if (permissionResult.granted === false) {
+  //     console.log("Se require que acepte los permisos");
+  //   } else {
+  //     let pickerResult = await ImagePicker.launchImageLibraryAsync();
+
+  //     if (pickerResult.cancelled) {
+  //       console.log("Necesita seleccionar una imagen");
+  //     } else {
+  //       setimagesSelected(pickerResult.uri);
+  //     }
+  //   }
+  // };
 
   return (
     <View styles={styles.viewImages}>
@@ -326,6 +365,7 @@ const styles = StyleSheet.create({
   },
   viewMapBtnCancel: {
     backgroundColor: "#a60d0d",
+    marginTop: 5,
   },
   viewMapBtnContainerSave: {
     paddingRight: 5,

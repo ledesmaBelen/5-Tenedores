@@ -2,7 +2,7 @@ import { isEmpty } from "lodash";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Input, Icon, Button } from "react-native-elements";
-
+import { obtenerUser } from "../../services/RestaurantsService";
 import { validateEmail } from "../../utils/validations";
 import * as firebase from "firebase";
 import { useNavigation } from "@react-navigation/native";
@@ -26,6 +26,7 @@ export default function LoginForm() {
       seterrors({ errEmail: "El email es incorrecto" });
     } else {
       setLoading(true);
+
       firebase
         .auth()
         .signInWithEmailAndPassword(formData.email, formData.password)

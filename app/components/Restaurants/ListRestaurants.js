@@ -9,9 +9,10 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Image } from "react-native-elements";
+import { goRestaurant } from "../../services/RestaurantsService";
 
 export default function ListRestaurants(props) {
-  const { restaurants } = props;
+  const { restaurants, handleLoadMore, isLoading } = props;
 
   return (
     <View>
@@ -20,6 +21,9 @@ export default function ListRestaurants(props) {
           data={restaurants}
           renderItem={(restaurant) => <Restaurant restaurant={restaurant} />}
           keyExtractor={(item, index) => index.toString()}
+          onEndReachedThreshold={0.5}
+          onEndReached={handleLoadMore}
+          ListFooterComponent={<FooterList isLoading={isLoading} />}
         />
       ) : (
         <View style={styles.loaderRestaurants}>
@@ -33,14 +37,8 @@ export default function ListRestaurants(props) {
 
 function Restaurant(props) {
   const { restaurant } = props;
-  const { id, images, name, address, description } = restaurant.item;
+  const { id, images, name, address, descrption } = restaurant.item;
   const imageRestaurant = images ? images : null;
-
-  const goRestaurant = () => {
-    console.log(restaurant.item);
-
-    console.log("ok");
-  };
 
   return (
     <TouchableOpacity onPress={goRestaurant}>
@@ -60,10 +58,31 @@ function Restaurant(props) {
         <View>
           <Text style={styles.restaurantName}>{name}</Text>
           <Text style={styles.restaurantAddress}>{address}</Text>
+          <Text style={styles.restaurantDescription}>
+            {descrption.substr(0, 60)}...
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
   );
+}
+
+function FooterList(props) {
+  const { isLoading } = props;
+
+  if (isLoading) {
+    return (
+      <View style={styles.loaderRestaurants}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.notFoundRestaurants}>
+        <Text>No quedan restaurantes por cargar</Text>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
