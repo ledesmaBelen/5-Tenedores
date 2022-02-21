@@ -3,7 +3,7 @@ import "firebase/auth";
 import "firebase/storage";
 import "firebase/firestore";
 
-export function updateName(setisLoading, setreloadUserInfo, setShowModal, update){
+export function updateName(setisLoading, setreloadUserInfo, setShowModal, update, setErrors){
   firebase
     .auth()
     .currentUser.updateProfile(update)
@@ -112,5 +112,22 @@ export function loginCheck(setLogin){
     firebase.auth().onAuthStateChanged((user) => {
       !user? setLogin(false) : setLogin(true);
   })
+}
+
+export function reauthenticate(password) {
+  const user = firebase.auth().currentUser;
+  const credencials = firebase.auth.EmailAuthProvider.credential(
+    user.email,
+    password
+  );
+  return user.reauthenticateWithCredential(credencials);
+}
+
+export function currentUser(){ 
+  return firebase.auth().currentUser
+}
+
+export function signOut(){
+  firebase.auth().signOut()
 }
 

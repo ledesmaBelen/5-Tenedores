@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Input, Button } from "react-native-elements";
 import { validateEmail } from "../../utils/validations";
-import { reauthenticate } from "../../utils/api";
+import { reauthenticate } from "../../controllers/UserController";
 import { updateEmail } from "../../controllers/UserController";
 
 export default function ChangeEmailForm(props) {

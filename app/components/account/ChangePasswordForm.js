@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Input, Button } from "react-native-elements";
 import { size } from "lodash";
-import { reauthenticate } from "../../utils/api";
+import { reauthenticate } from "../../controllers/UserController";
 import { updatePass } from "../../controllers/UserController";
 
 export default function ChangePasswordForm(props) {

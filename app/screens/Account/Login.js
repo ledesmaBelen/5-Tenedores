@@ -3,7 +3,7 @@ import React from "react";
 import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
 import { Divider } from "react-native-elements";
 import LoginForm from "../../components/account/LoginForm";
-import UserGuest from "./UserGuest";
+
 //SE DEFINE LA VISTA DE LOGGEO
 export default function Login() {
   return (

@@ -20,7 +20,13 @@ export default function ChangeDisplayNameForm(props) {
       const update = {
         displayName: newDisplayName,
       };
-      updateName(setisLoading, setreloadUserInfo, setShowModal, update);
+      updateName(
+        setisLoading,
+        setreloadUserInfo,
+        setShowModal,
+        update,
+        setErrors
+      );
     }
   };
 
