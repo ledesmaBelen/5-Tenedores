@@ -9,7 +9,7 @@ import {
   verificarEstado,
   listarRestaurantes,
   cantidadRestaurants,
-} from "../../services/RestaurantsService";
+} from "../../controllers/RestaurantsController";
 import ListRestaurants from "../../components/Restaurants/ListRestaurants";
 
 const db = firebase.firestore(app);

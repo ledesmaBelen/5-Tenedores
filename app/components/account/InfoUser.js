@@ -3,7 +3,7 @@ import {View, StyleSheet, Text} from "react-native";
 import {Avatar} from "react-native-elements";
 import { Camera } from 'expo-camera';
 import * as ImagePicker from "expo-image-picker";
-import { uploadImage, updatePhotoUrl } from "../../services/UserService";
+import { uploadImage, updatePhotoUrl } from "../../controllers/UserController";
 
 export default function InfoUser(props) {
   const  {userInfo: { photoURL, displayName, email, uid},

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Button } from "react-native-elements";
-import * as firebase from "firebase";
 import Loading from "../../components/Loading";
 import InfoUser from "../../components/account/InfoUser";
 import AccountOptions from "../../components/account/AccountOptions";
+import { currentUser, signOut} from "../../controllers/UserController";
 
 export default function UserLogger() {
   const [userInfo, setuserInfo] = useState(null);
@@ -14,7 +14,7 @@ export default function UserLogger() {
 
   useEffect(() => {
     (async () => {
-      const user = await firebase.auth().currentUser;
+      const user = await currentUser();
       setuserInfo(user);
     })();
     setreloadUserInfo(false);
@@ -41,7 +41,7 @@ export default function UserLogger() {
         title="Cerrar sesion"
         buttonStyle={styles.btnCloseSesion}
         titleStyle={styles.btnCloseSesionText}
-        onPress={() => firebase.auth().signOut()}
+        onPress={() => signOut()}
       />
       <Loading text={loadingText} isVisible={loading} />
     </View>

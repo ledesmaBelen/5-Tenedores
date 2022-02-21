@@ -5,7 +5,7 @@ import Loading from "../Loading";
 import { validateEmail } from "../../utils/validations";
 import { size, isEmpty } from "lodash";
 import { useNavigation } from "@react-navigation/native";
-import { register } from "../../services/UserService";
+import { register } from "../../controllers/UserController";
 
 //LOS ICONOS SON PARTE DE REACT
 export default function RegisterForm() {

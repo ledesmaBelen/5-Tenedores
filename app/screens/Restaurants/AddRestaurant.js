@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import AddRestaurantForm from "../../components/Restaurants/AddRestaurantForm";
 import Loading from "../../components/Loading";
 

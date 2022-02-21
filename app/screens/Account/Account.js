@@ -2,7 +2,7 @@ import React, { useState, useEffect} from "react";
 import UserLogged from "./UserLogged";
 import Login from "../Account/Login";
 import Loading from "../../components/Loading";
-import { loginCheck } from "../../services/UserService";
+import { loginCheck } from "../../controllers/UserController";
 
 export default function Account() {
   const [login, setLogin] = useState(null);

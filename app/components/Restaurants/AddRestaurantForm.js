@@ -14,7 +14,7 @@ import {
   uploadImageStorageService,
   obtenerlaLocalizacionService,
   imageSelectService,
-} from "../../services/RestaurantsService";
+} from "../../controllers/RestaurantsController";
 import * as ImagePicker from "expo-image-picker";
 import { map, result, size } from "lodash";
 import Modal from "../Modal";
