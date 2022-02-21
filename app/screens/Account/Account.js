@@ -1,8 +1,8 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import UserLogged from "./UserLogged";
 import Login from "../Account/Login";
 import Loading from "../../components/Loading";
-import { loginCheck } from "../../services/UserService";
+import { loginCheck } from "../../controllers/UserController";
 
 export default function Account() {
   const [login, setLogin] = useState(null);
@@ -17,5 +17,5 @@ export default function Account() {
   if (login === null) return <Loading isVisible={true} text="Cargando..." />;
   //SI EL USIARIO ESTA LOGGEADO RETORNA USERLOGGER
   //SI NO ESTA LOG SOLO PUEDE EL CONTENIDO DE USERGUEST
-  return login ? <UserLogged /> : <Login/>;
+  return login ? <UserLogged /> : <Login />;
 }

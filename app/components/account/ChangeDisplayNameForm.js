@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Button, Input } from "react-native-elements";
 import { View, StyleSheet } from "react-native";
-import {updateName} from "../../services/UserService";
-
+import { updateName } from "../../controllers/UserController";
 
 export default function ChangeDisplayNameForm(props) {
   const { displayName, setShowModal, setreloadUserInfo } = props;
@@ -24,7 +23,7 @@ export default function ChangeDisplayNameForm(props) {
       updateName(setisLoading, setreloadUserInfo, setShowModal, update);
     }
   };
-  
+
   return (
     <View style={styles.view}>
       <Input

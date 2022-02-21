@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Image } from "react-native-elements";
-import { goRestaurant } from "../../services/RestaurantsService";
+import { goRestaurant } from "../../controllers/RestaurantsController";
 
 export default function ListRestaurants(props) {
   const { restaurants, handleLoadMore, isLoading } = props;

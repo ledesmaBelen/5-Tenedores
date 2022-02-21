@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 import { Input, Icon, Button } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
 import { validateEmail } from "../../utils/validations";
-import { login } from "../../services/UserService";
+import { login } from "../../controllers/UserController";
 import Loading from "../Loading";
 
 export default function LoginForm() {

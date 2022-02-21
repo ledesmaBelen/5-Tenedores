@@ -3,7 +3,7 @@ import { StyleSheet, View, Text } from "react-native";
 import { Input, Button } from "react-native-elements";
 import { size } from "lodash";
 import { reauthenticate } from "../../utils/api";
-import {updatePass} from "../../services/UserService";
+import { updatePass } from "../../controllers/UserController";
 
 export default function ChangePasswordForm(props) {
   const { setShowModal } = props;

@@ -6,13 +6,15 @@ import { app } from "../../utils/firebase";
 import firebase from "firebase";
 import "firebase/firestore";
 import {
-  verificarEstado,
-  listarRestaurantes,
-  cantidadRestaurants,
-} from "../../services/RestaurantsService";
+  verifState,
+  listRestaurantes,
+  sizeRestaurants,
+  reload,
+  handleLoadMoreController,
+} from "../../controllers/RestaurantsController";
 import ListRestaurants from "../../components/Restaurants/ListRestaurants";
 
-const db = firebase.firestore(app);
+//const db = firebase.firestore(app);
 
 export default function Restaurants(props) {
   const { navigation } = props;
@@ -24,90 +26,35 @@ export default function Restaurants(props) {
   const limitRestaurants = 10;
 
   useEffect(() => {
-    verificarEstado(setuser);
-    // firebase.auth().onAuthStateChanged((userInfo) => {
-    //   setuser(userInfo);
-    // });
+    verifState(setuser);
   }, []);
 
   useEffect(() => {
-    cantidadRestaurants(settotalRestaurants);
-    listarRestaurantes(limitRestaurants, setrestaurants, setstartRestaurants);
-    // db.collection("restaurants")
-    //   .get()
-    //   .then((snap) => {
-    //     console.log(snap.size);
-    //     console.log("entro en funcion cantidadresto");
-    //     settotalRestaurants(snap.size);
-    //   });
-    // const resultRestaurants = [];
-
-    // db.collection("restaurants")
-    //   .orderBy("createAt", "desc")
-    //   .limit(limitRestaurants)
-    //   .get()
-    //   .then((response) => {
-    //     setstartRestaurants(response.docs[response.docs.length - 1]);
-
-    //     response.forEach((doc) => {
-    //       const restaurant = doc.data();
-    //       restaurant.id = doc.id;
-    //       resultRestaurants.push(restaurant);
-    //     });
-    //     console.log("entro en funcion listarrestyaurants");
-    //     setrestaurants(resultRestaurants);
-    //   });
+    sizeRestaurants(settotalRestaurants);
+    listRestaurantes(limitRestaurants, setrestaurants, setstartRestaurants);
   }, []);
 
   useFocusEffect(
     useCallback(() => {
-      db.collection("restaurants")
-        .get()
-        .then((snap) => {
-          settotalRestaurants(snap.size);
-        });
-
-      const resultRestaurants = [];
-
-      db.collection("restaurants")
-        .orderBy("createAt", "desc")
-        .limit(limitRestaurants)
-        .get()
-        .then((response) => {
-          setstartRestaurants(response.docs[response.docs.length - 1]);
-
-          response.forEach((doc) => {
-            const restaurant = doc.data();
-            restaurant.id = doc.id;
-            resultRestaurants.push(restaurant);
-          });
-          setrestaurants(resultRestaurants);
-        });
+      reload(
+        settotalRestaurants,
+        limitRestaurants,
+        setstartRestaurants,
+        setrestaurants
+      );
     }, [])
   );
 
   const handleLoadMore = () => {
-    const resultRestaurants = [];
-    restaurants.length < totalRestaurants && setisLoading(true);
-    db.collection("restaurants")
-      .orderBy("createAt", "desc")
-      .startAfter(startRestaurants.data().createAt)
-      .limit(limitRestaurants)
-      .get()
-      .then((response) => {
-        if (response.docs.length > 0) {
-          setstartRestaurants(response.docs[response.docs.length - 1]);
-        } else {
-          setisLoading(false);
-        }
-        response.forEach((doc) => {
-          const restaurant = doc.data();
-          restaurant.id = doc.id;
-          resultRestaurants.push(restaurant);
-        });
-
-        setrestaurants([...restaurants, ...resultRestaurants]);
-      });
+    handleLoadMoreController(
+      restaurants,
+      setisLoading,
+      startRestaurants,
+      limitRestaurants,
+      setstartRestaurants,
+      setrestaurants,
+      totalRestaurants
+    );
   };
 
   return (

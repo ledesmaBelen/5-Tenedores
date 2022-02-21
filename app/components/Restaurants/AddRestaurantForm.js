@@ -9,12 +9,12 @@ import {
 } from "react-native";
 import { Avatar, Icon, Input } from "react-native-elements";
 import {
-  agregarunRestaurant,
+  addRestaurantController,
   validarInfoResto,
   uploadImageStorageService,
   obtenerlaLocalizacionService,
   imageSelectService,
-} from "../../services/RestaurantsService";
+} from "../../controllers/RestaurantsController";
 import * as ImagePicker from "expo-image-picker";
 import { map, result, size } from "lodash";
 import Modal from "../Modal";
@@ -57,7 +57,7 @@ export default function AddRestaurantForm(props) {
       setisLoading(true);
       uploadImageStorageService(imagesSelected).then((response) => {
         console.log(response);
-        agregarunRestaurant(
+        addRestaurantController(
           restaurantName,
           restaurantAddress,
           restaurantDescription,
@@ -72,49 +72,6 @@ export default function AddRestaurantForm(props) {
       });
     }
   };
-
-  // db.collection("restaurants")
-  //   .add({
-  //     name: restaurantName,
-  //     address: restaurantAddress,
-  //     descrption: restaurantDescription,
-  //     location: locationRestaurant,
-  //     images: response,
-  //     rating: 0,
-  //     quantifyVoting: 0,
-  //     createAt: new Date(),
-  //     createBy: firebase.auth().currentUser.uid,
-  //   })
-  //   .then(() => {
-  //     setisLoading(false);
-  //     navigation.navigate("restaurants");
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //     setisLoading(false);
-  //     console.log("Error al subir el restaurante, intentelo más tarde");
-  //   });
-
-  // const uploadImageStorage = async () => {
-  //   const imageBlob = [];
-  //   const response = await fetch(imagesSelected);
-  //   const blob = await response.blob();
-
-  //   const ref = firebase.storage().ref("restaurants").child(uuid());
-  //   await ref.put(blob).then(async (result) => {
-  //     await firebase
-  //       .storage()
-  //       .ref(`restaurants/${result.metadata.name}`)
-  //       .getDownloadURL()
-  //       .then((photoUrl) => {
-  //         console.log(photoUrl);
-  //         imageBlob.push(photoUrl);
-  //       })
-  //       .catch((err) => console.log(err));
-  //   });
-
-  //   return imageBlob[0];
-  // };
 
   return (
     <ScrollView style={styles.scrollView}>
@@ -205,23 +162,6 @@ function Map(props) {
 
   useEffect(() => {
     obtenerlaLocalizacionService(setLocation);
-    // (async () => {
-    //   const result = await Location.requestForegroundPermissionsAsync();
-
-    //   if (result.status !== "granted") {
-    //     console.log("Permission to access location was denied");
-    //   } else {
-    //     const loc = await Location.getCurrentPositionAsync({});
-    //     const loca = {
-    //       latitude: loc.coords.latitude,
-    //       longitude: loc.coords.longitude,
-    //       latitudeDelta: 0.001,
-    //       longitudeDelta: 0.001,
-    //     };
-
-    //     setLocation(loca);
-    //   }
-    // })();
   }, []);
 
   const confirmLocation = () => {
@@ -275,24 +215,6 @@ function UploadImage(props) {
   const imageSelect = () => {
     imageSelectService(setimagesSelected);
   };
-  //  const imageSelect = async () => {
-  //   //imageSelectService(setimagesSelected);
-  //   let permissionResult =
-  //     await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-  //   if (permissionResult.granted === false) {
-  //     console.log("Se require que acepte los permisos");
-  //   } else {
-  //     let pickerResult = await ImagePicker.launchImageLibraryAsync();
-
-  //     if (pickerResult.cancelled) {
-  //       console.log("Necesita seleccionar una imagen");
-  //     } else {
-  //       setimagesSelected(pickerResult.uri);
-  //     }
-  //   }
-  // };
-
   return (
     <View styles={styles.viewImages}>
       <Icon
