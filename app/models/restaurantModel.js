@@ -6,8 +6,10 @@ import "firebase/firestore";
 const db = firebase.firestore(app);
 
 export function stateUser() {
-  firebase.auth().onAuthStateChanged((userInfo) => {
-    return userInfo;
+  return new Promise((resolve, reject) => {
+    firebase.auth().onAuthStateChanged((userInfo) => {
+      resolve(userInfo);
+    });
   });
 }
 
@@ -20,24 +22,28 @@ export function sizeRestaurantsModel() {
 }
 
 export function listRestaurantsModel(limitRestaurants) {
-  db.collection("restaurants")
-    .orderBy("createAt", "desc")
-    .limit(limitRestaurants)
-    .get()
-    .then((response) => {
-      return response;
-    });
+  return new Promise((resolve, reject) => {
+    db.collection("restaurants")
+      .orderBy("createAt", "desc")
+      .limit(limitRestaurants)
+      .get()
+      .then((response) => {
+        resolve(response);
+      });
+  });
 }
 
 export function handleLoadMoreModels(limitRestaurants, startRestaurants) {
-  db.collection("restaurants")
-    .orderBy("createAt", "desc")
-    .startAfter(startRestaurants.data().createAt)
-    .limit(limitRestaurants)
-    .get()
-    .then((response) => {
-      return response;
-    });
+  return new Promise((resolve, reject) => {
+    db.collection("restaurants")
+      .orderBy("createAt", "desc")
+      .startAfter(startRestaurants.data().createAt)
+      .limit(limitRestaurants)
+      .get()
+      .then((response) => {
+        resolve(response);
+      });
+  });
 }
 
 export function addRestaurantModels(
@@ -70,17 +76,15 @@ export function addRestaurantModels(
     });
 }
 
-export async function uploadImageStorageModel(blob, imageBlob) {
-  const ref = firebase.storage().ref("restaurants").child(uuid());
-  await ref.put(blob).then(async (result) => {
-    await firebase
+export async function uploadImageStorageModel(result) {
+  return new Promise((resolve, reject) => {
+    firebase
       .storage()
       .ref(`restaurants/${result.metadata.name}`)
       .getDownloadURL()
       .then((photoUrl) => {
         console.log(photoUrl);
-        console.log("entro en linea 125 service");
-        imageBlob.push(photoUrl);
+        resolve(photoUrl);
       })
       .catch((err) => console.log(err));
   });

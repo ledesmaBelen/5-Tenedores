@@ -7,6 +7,15 @@ import { app } from "../utils/firebase";
 import firebase from "firebase/app";
 import "firebase/storage";
 import "firebase/firestore";
+import {
+  stateUser,
+  sizeRestaurantsModel,
+  listRestaurantsModel,
+  addRestaurantModels,
+  uploadImageStorageModel,
+  handleLoadMoreModels,
+} from "../models/restaurantModel";
+
 //FUNCION DE LIST RESTAURANTS
 export function goRestaurant() {
   console.log("Ok");
@@ -16,45 +25,36 @@ export function goRestaurant() {
 //DEFINICION DE DB
 const db = firebase.firestore(app);
 
-export function verificarEstado(setuser) {
-  firebase.auth().onAuthStateChanged((userInfo) => {
-    setuser(userInfo);
-    console.log("entro en funcion de verificar estado SERVICE");
-  });
+export async function verifState(setuser) {
+  try {
+    const datos = await stateUser();
+    setuser(datos);
+  } catch (err) {
+    console.log(err);
+  }
 }
 
-export function cantidadRestaurants(settotalRestaurants) {
-  db.collection("restaurants")
-    .get()
-    .then((snap) => {
-      console.log(snap.size);
-      console.log("entro en funcion cantidadresto SERVICE");
-      settotalRestaurants(snap.size);
-    });
+export function sizeRestaurants(settotalRestaurants) {
+  settotalRestaurants(sizeRestaurantsModel());
 }
 
-export function listarRestaurantes(
+export async function listRestaurantes(
   limitRestaurants,
   setrestaurants,
   setstartRestaurants
 ) {
   const resultRestaurants = [];
+  const result = await listRestaurantsModel(limitRestaurants);
 
-  db.collection("restaurants")
-    .orderBy("createAt", "desc")
-    .limit(limitRestaurants)
-    .get()
-    .then((response) => {
-      setstartRestaurants(response.docs[response.docs.length - 1]);
+  setstartRestaurants(result.docs[result.docs.length - 1]);
 
-      response.forEach((doc) => {
-        const restaurant = doc.data();
-        restaurant.id = doc.id;
-        resultRestaurants.push(restaurant);
-      });
-      console.log("entro en funcion listarestaurant SERVICE");
-      setrestaurants(resultRestaurants);
-    });
+  result.forEach((doc) => {
+    const restaurant = doc.data();
+    restaurant.id = doc.id;
+    resultRestaurants.push(restaurant);
+  });
+
+  setrestaurants(resultRestaurants);
 }
 
 //Addresaurantsform
@@ -79,34 +79,20 @@ export function validarInfoResto(
     return true;
   }
 }
-export function agregarunRestaurant(
+export function addRestaurantController(
   restaurantName,
   restaurantAddress,
   restaurantDescription,
   locationRestaurant,
   response
 ) {
-  db.collection("restaurants")
-    .add({
-      name: restaurantName,
-      address: restaurantAddress,
-      descrption: restaurantDescription,
-      location: locationRestaurant,
-      images: response,
-      rating: 0,
-      quantifyVoting: 0,
-      createAt: new Date(),
-      createBy: firebase.auth().currentUser.uid,
-    })
-    .then(() => {
-      console.log(
-        "ENTRO POR THEN Y RETORNA TRUE LINEA 85 AGREGAR RESTAURANT SERVICE"
-      );
-    })
-    .catch((err) => {
-      console.log(err);
-      console.log("ENTRO POR CATCH Y RETORNA FALSE ADD RESTAURANT SERVICE");
-    });
+  addRestaurantModels(
+    restaurantName,
+    restaurantAddress,
+    restaurantDescription,
+    locationRestaurant,
+    response
+  );
 }
 
 export async function uploadImageStorageService(imagesSelected) {
@@ -116,16 +102,8 @@ export async function uploadImageStorageService(imagesSelected) {
 
   const ref = firebase.storage().ref("restaurants").child(uuid());
   await ref.put(blob).then(async (result) => {
-    await firebase
-      .storage()
-      .ref(`restaurants/${result.metadata.name}`)
-      .getDownloadURL()
-      .then((photoUrl) => {
-        console.log(photoUrl);
-        console.log("entro en linea 125 service");
-        imageBlob.push(photoUrl);
-      })
-      .catch((err) => console.log(err));
+    const url = await uploadImageStorageModel(result);
+    imageBlob.push(url);
   });
 
   return imageBlob[0];
@@ -163,4 +141,28 @@ export async function imageSelectService(setimagesSelected) {
       setimagesSelected(pickerResult.uri);
     }
   }
+}
+
+export async function handleLoadMoreController(
+  startRestaurants,
+  setrestaurants,
+  setstartRestaurants,
+  restaurants,
+  limitRestaurants,
+  setisLoading
+) {
+  const resultRestaurants = [];
+  const result = await handleLoadMoreModels(limitRestaurants, startRestaurants);
+
+  if (result.docs.length > 0) {
+    setstartRestaurants(result.docs[result.docs.length - 1]);
+  } else {
+    setisLoading(false);
+  }
+  result.forEach((doc) => {
+    const restaurant = doc.data();
+    restaurant.id = doc.id;
+    resultRestaurants.push(restaurant);
+  });
+  setrestaurants([...restaurants, ...resultRestaurants]);
 }

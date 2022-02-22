@@ -9,12 +9,11 @@ import {
   verifState,
   listRestaurantes,
   sizeRestaurants,
-  reload,
   handleLoadMoreController,
 } from "../../controllers/RestaurantsController";
 import ListRestaurants from "../../components/Restaurants/ListRestaurants";
 
-//const db = firebase.firestore(app);
+const db = firebase.firestore(app);
 
 export default function Restaurants(props) {
   const { navigation } = props;
@@ -36,24 +35,21 @@ export default function Restaurants(props) {
 
   useFocusEffect(
     useCallback(() => {
-      reload(
-        settotalRestaurants,
-        limitRestaurants,
-        setstartRestaurants,
-        setrestaurants
-      );
+      verifState(setuser);
+      sizeRestaurants(settotalRestaurants);
+      listRestaurantes(limitRestaurants, setrestaurants, setstartRestaurants);
     }, [])
   );
 
   const handleLoadMore = () => {
+    restaurants.length < totalRestaurants && setisLoading(true);
     handleLoadMoreController(
-      restaurants,
-      setisLoading,
       startRestaurants,
-      limitRestaurants,
-      setstartRestaurants,
       setrestaurants,
-      totalRestaurants
+      setstartRestaurants,
+      restaurants,
+      limitRestaurants,
+      setisLoading
     );
   };
 

@@ -56,7 +56,6 @@ export default function AddRestaurantForm(props) {
     ) {
       setisLoading(true);
       uploadImageStorageService(imagesSelected).then((response) => {
-        console.log(response);
         addRestaurantController(
           restaurantName,
           restaurantAddress,
