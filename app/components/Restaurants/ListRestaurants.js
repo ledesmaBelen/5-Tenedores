@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import { size } from "lodash";
 import React from "react";
 import {
@@ -9,17 +10,19 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Image } from "react-native-elements";
-import { goRestaurant } from "../../controllers/RestaurantsController";
 
 export default function ListRestaurants(props) {
   const { restaurants, handleLoadMore, isLoading } = props;
+  const navigation = useNavigation();
 
   return (
     <View>
       {size(restaurants) > 0 ? (
         <FlatList
           data={restaurants}
-          renderItem={(restaurant) => <Restaurant restaurant={restaurant} />}
+          renderItem={(restaurant) => (
+            <Restaurant restaurant={restaurant} navigation={navigation} />
+          )}
           keyExtractor={(item, index) => index.toString()}
           onEndReachedThreshold={0.5}
           onEndReached={handleLoadMore}
@@ -36,9 +39,16 @@ export default function ListRestaurants(props) {
 }
 
 function Restaurant(props) {
-  const { restaurant } = props;
+  const { restaurant, navigation } = props;
   const { id, images, name, address, descrption } = restaurant.item;
   const imageRestaurant = images ? images : null;
+
+  const goRestaurant = () => {
+    navigation.navigate("restaurant", {
+      id,
+      name,
+    });
+  };
 
   return (
     <TouchableOpacity onPress={goRestaurant}>

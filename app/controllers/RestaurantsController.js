@@ -16,14 +16,7 @@ import {
   handleLoadMoreModels,
 } from "../models/restaurantModel";
 
-//FUNCION DE LIST RESTAURANTS
-export function goRestaurant() {
-  console.log("Ok");
-}
-
 //RESTAURANTS
-//DEFINICION DE DB
-const db = firebase.firestore(app);
 
 export async function verifState(setuser) {
   try {

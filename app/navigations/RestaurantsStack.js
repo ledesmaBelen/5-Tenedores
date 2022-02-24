@@ -2,8 +2,8 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import Restaurants from "../screens/Restaurants/Restaurants";
 import AddRestaurant from "../screens/Restaurants/AddRestaurant";
+import Restaurant from "../screens/Restaurants/Restaurant";
 import { StyleSheet } from "react-native";
-
 
 //AÑADIMOS EL STACK DE ARRIBA,
 //SOLO PUEDE SER VISIBLE UNO A LA VEZ,LOS OTROS ESTAN ACCESIBLES PERO NO VISIBLES
@@ -22,6 +22,7 @@ export default function RestaurantsStack() {
         component={AddRestaurant}
         options={{ title: "Añadir un nuevo restaurante" }}
       />
+      <Stack.Screen name="restaurant" component={Restaurant} />
     </Stack.Navigator>
   );
 }
